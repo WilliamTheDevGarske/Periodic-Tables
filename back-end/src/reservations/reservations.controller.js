@@ -63,39 +63,20 @@ function createValidation(req, res, next) {
   });
 }
 
- const hours = Number(resTime.split(":")[0]);
- const minutes = Number(resTime.split(":")[1]);
- if (hours < 10 || (hours === 10 && minutes < 30)) {
-   next({
-     status: 400,
-     message: `Reservation must be after 10:30AM`,
-   });
- }
- if (hours > 21 || (hours === 21 && minutes > 30)) {
-   next({
-     status: 400,
-     message: `Reservation must be before 9:30PM`,
-   });
- }
-
+if (resTime < "10:30" || resTime > "21:30") {
+  return next({
+    status: 400,
+    message: "Reservation time should be in between 10:30 AM and 9:30 PM",
+  });
+}
 
   // ValidDate
-  const clientTimeZoneOffset = new Date().getTimezoneOffset();
-  const currentDate = new Date();
-  const date = data["reservation_date"];
-  const time = data["reservation_time"];
-  const formattedDate = new Date(`${date}T${time}`);
+  const { data: { reservation_date } = {} } = req.body;
+  const date = new Date(reservation_date);
+  const today = new Date()
   const day = new Date(date).getUTCDay();
-  
-  const adjustedResDate = new Date(formattedDate);
-  adjustedResDate.setMinutes(formattedDate.getMinutes() - clientTimeZoneOffset);
 
-  const adjustedCurrentDate = new Date(currentDate);
-  adjustedCurrentDate.setMinutes(currentDate.getMinutes() - clientTimeZoneOffset);
-
-  console.log(adjustedResDate, adjustedCurrentDate)
-
-  
+  console.log(date.getTime(), today.getTime())
   
   if (isNaN(Date.parse(data["reservation_date"]))) {
     return next({
@@ -109,10 +90,10 @@ function createValidation(req, res, next) {
       message: `Restaurant is closed on Tuesdays`,
     });
   }
-  if (adjustedResDate <= adjustedCurrentDate) {
+  if (date.getTime() < today.getTime()) {
     return next({
       status: 400,
-      message: `Reservation must be in the future`,
+      message: "Current date must be in future",
     });
   }
 
