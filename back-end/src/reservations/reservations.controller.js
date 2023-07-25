@@ -76,7 +76,10 @@ if (resTime < "10:30" || resTime > "21:30") {
   const today = new Date()
   const day = new Date(date).getUTCDay();
 
-  console.log(date.getTime(), today.getTime())
+console.log("----------------------------------today date is-------------------------------", today)
+
+
+console.log("--------------------------------date is---------------------------------------", date)
   
   if (isNaN(Date.parse(data["reservation_date"]))) {
     return next({
