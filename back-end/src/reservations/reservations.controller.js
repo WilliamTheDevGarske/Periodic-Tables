@@ -86,11 +86,14 @@ function createValidation(req, res, next) {
   const time = data["reservation_time"];
   const formattedDate = new Date(`${date}T${time}`);
   const day = new Date(date).getUTCDay();
+  
   const adjustedResDate = new Date(formattedDate);
   adjustedResDate.setMinutes(formattedDate.getMinutes() - clientTimeZoneOffset);
 
   const adjustedCurrentDate = new Date(currentDate);
   adjustedCurrentDate.setMinutes(currentDate.getMinutes() - clientTimeZoneOffset);
+
+  console.log(adjustedResDate, adjustedCurrentDate)
 
   
   
